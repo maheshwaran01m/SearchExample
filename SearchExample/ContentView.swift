@@ -13,7 +13,18 @@ struct ContentView: View {
   
   var body: some View {
     NavigationStack {
+      mainView
+        .navigationTitle("Search")
+        .searchable(text: $viewModel.searchText)
+    }
+  }
+  
+  @ViewBuilder
+  private var mainView: some View {
+    if !viewModel.filteredRecords.isEmpty {
       listView
+    } else {
+      placeholderView
     }
   }
   
@@ -22,8 +33,6 @@ struct ContentView: View {
       selectionRows(for: item)
     }
     .listStyle(.plain)
-    .navigationTitle("Search")
-    .searchable(text: $viewModel.searchText)
   }
   
   private func selectionRows(for item: String) -> some View {
@@ -39,6 +48,34 @@ struct ContentView: View {
       .onTapGesture {
         viewModel.selectedItem = item
       }
+  }
+  
+  // MARK: - Placeholder View
+  
+  private var placeholderView: some View {
+    ZStack {
+      Color.secondary.opacity(0.1)
+      VStack(spacing: 16) {
+        iconView
+        titleView
+      }
+    }
+    .ignoresSafeArea(.container, edges: .bottom)
+  }
+  
+  private var titleView: some View {
+    Text("No Examples")
+      .font(.title3)
+      .frame(minHeight: 22)
+      .multilineTextAlignment(.center)
+      .foregroundStyle(.secondary)
+  }
+  
+  private var iconView: some View {
+    Image(systemName: "square.on.square.badge.person.crop")
+      .font(.title3)
+      .foregroundStyle(Color.secondary)
+      .frame(minWidth: 20, minHeight: 20)
   }
 }
 
